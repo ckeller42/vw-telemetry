@@ -1,0 +1,31 @@
+# --- credentials & private data — NEVER commit (this file exists from commit #1) ---
+.env
+*.env
+!*.env.example
+state/
+*.jsonl
+*.zip
+data/
+archive/
+secrets/
+*.secret
+
+# --- python / tooling ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+.uv/
+uv.lock.local
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+dist/
+build/
+*.egg-info/
+
+# --- docs build ---
+site/
+
+# --- os ---
+.DS_Store
