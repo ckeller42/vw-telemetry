@@ -19,8 +19,15 @@ def test_door_aggregates(raw_record):
     f = decode(raw_record).fields
     assert f["door_front_left_locked"] is True  # code 2
     assert f["door_front_left_open"] is False  # code 3 = closed
-    assert f["any_unlocked"] is True  # bonnet code 3 = unlocked
-    assert f["doors_locked"] >= 2
+    assert f["any_unlocked"] is False  # bonnet code 3 = unlocked, but bonnet doesn't count
+    assert f["doors_locked"] == 2
+
+    # Verify a real door unlock DOES trigger any_unlocked
+    real_door_unlock = dict(raw_record)
+    real_door_unlock["fields"] = dict(raw_record["fields"])
+    real_door_unlock["fields"]["locked_state_front_left_door"] = "3"
+    f_real_unlock = decode(real_door_unlock).fields
+    assert f_real_unlock["any_unlocked"] is True
 
 
 def test_service_overdue_and_warnings(raw_record):

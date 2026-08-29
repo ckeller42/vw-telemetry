@@ -76,7 +76,8 @@ def decode(record: dict[str, Any]) -> DecodedPoint:
             locked += 1
         elif lk == 3:
             out[f"door_{output_name}_locked"] = False
-            any_unlocked = True
+            if output_name != "front_engine_bonnet":
+                any_unlocked = True
         if op == 2:
             out[f"door_{output_name}_open"] = True
             opened += 1
