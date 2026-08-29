@@ -19,3 +19,12 @@ def test_env_example_has_no_secrets():
     tok_key = "INFLUX_TOKEN"  # noqa: S105
     # Check that both keys appear with empty values (followed by newline)
     assert f"{pwd_key}=" in t and f"{tok_key}=" in t
+
+
+def test_env_example_values_have_no_inline_comments():
+    for line in (DEPLOY / "vw-telemetry.env.example").read_text().splitlines():
+        line = line.rstrip()
+        if not line or line.lstrip().startswith("#") or "=" not in line:
+            continue
+        value = line.split("=", 1)[1]
+        assert "#" not in value, f"inline comment leaks into value: {line!r}"
