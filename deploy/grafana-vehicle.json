@@ -1,0 +1,66 @@
+{
+  "title": "Vehicle (EU Data Act)",
+  "uid": "vw-telemetry",
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      {
+        "name": "vin",
+        "type": "query",
+        "datasource": "vehicle-influx",
+        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"vehicle\", tag: \"vin\")"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Odometer",
+      "type": "timeseries",
+      "datasource": "vehicle-influx",
+      "targets": [
+        {
+          "query": "from(bucket:\"vehicle\") |> range(start: v.timeRangeStart) |> filter(fn:(r)=> r._measurement==\"vehicle\" and r.vin==\"${vin}\" and r._field==\"mileage_km\")"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Fuel %",
+      "type": "gauge",
+      "datasource": "vehicle-influx",
+      "targets": [
+        {
+          "query": "from(bucket:\"vehicle\") |> range(start: -1d) |> filter(fn:(r)=> r._measurement==\"vehicle\" and r.vin==\"${vin}\" and r._field==\"fuel_pct\") |> last()"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Inspection km remaining",
+      "type": "stat",
+      "datasource": "vehicle-influx",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket:\"vehicle\") |> range(start:-1d) |> filter(fn:(r)=> r._measurement==\"vehicle\" and r.vin==\"${vin}\" and r._field==\"inspection_km_remaining\") |> last()"
+        }
+      ]
+    }
+  ]
+}
