@@ -1,0 +1,22 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: gitleaks/gitleaks-action@v2
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv python install 3.11
+      - run: uv sync --all-extras
+      - run: uv run pytest tests/test_no_private_data.py -v   # guard runs first
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy vwtelemetry
+      - run: uv run pytest -v
+      - run: uv run mkdocs build --strict

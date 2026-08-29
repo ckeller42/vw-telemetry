@@ -1,0 +1,7 @@
+title = "vw-telemetry gitleaks config"
+[extend]
+useDefault = true
+[allowlist]
+description = "synthetic test VIN + example env placeholders"
+regexes = ['''WVWTELEMETRY00TES''']
+paths = ['''.*\.env\.example$''']
