@@ -48,6 +48,12 @@ Idempotent: each dataset is keyed by its filename; a per-(vin) **watermark** in 
 double-writes, so the timer is crash-safe and naturally backfills the portal's rolling 30-dataset
 window on each run.
 
+**Implementation note (hard-won):** `reader.py` uses the **low-level `EudaApiClient`**
+(`login` → `list_vehicles` → `get_metadata` → `list_datasets` → `download_dataset`), *not* the
+high-level `CarConnectivity.fetch_all()` — the latter downloads and merges all ~30 datasets in one
+blocking call and hung in testing. Per-dataset download + our own `decode.py` is reliable and lets us
+control exactly which datasets are ingested (via the watermark).
+
 ### Module layout
 
 ```
