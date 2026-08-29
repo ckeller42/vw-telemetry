@@ -25,7 +25,7 @@ uv run mkdocs build --strict
 
 - **Never commit a real VIN or credentials.** Tests/docs use only the synthetic VIN
   `WVWTELEMETRY00TES`; `.env` and `state/` are gitignored. The `no-private-data` guard (in CI and
-  pre-commit) blocks real VW-Group VIN patterns and populated `VWID_PASSWORD=`/`INFLUX_TOKEN=`.
+  pre-commit) blocks real VW-Group VIN patterns and populated `VWID_PASSWORD`/`INFLUX_TOKEN`.
 - Install the pre-commit hooks once: `uv run pre-commit install`.
 
 ## CodeRabbit
