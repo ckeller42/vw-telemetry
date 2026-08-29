@@ -1,0 +1,28 @@
+# CodeRabbit config — https://docs.coderabbit.ai/ (the GitHub App must be installed on the repo).
+language: en
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+  path_filters:
+    - "!**/*.lock"
+    - "!**/*.json"          # grafana dashboard JSON is generated/large
+    - "!docs/superpowers/**"
+    - "!.superpowers/**"
+  path_instructions:
+    - path: "vwtelemetry/**"
+      instructions: >-
+        This is a standalone VW-Group telemetry service (EU Data Act -> InfluxDB). Flag any hardcoded
+        VIN or credential, any use of CarConnectivity.fetch_all (must use the low-level EudaApiClient),
+        and any InfluxDB point that uses ingest time instead of the vehicle's measurement time.
+    - path: "tests/**"
+      instructions: >-
+        Tests must use only the synthetic VIN WVWTELEMETRY00TES. Ensure assertions are meaningful
+        (not trivially true) and cover the documented enum/scale edge cases.
+chat:
+  auto_reply: true

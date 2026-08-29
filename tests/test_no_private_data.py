@@ -8,7 +8,7 @@ REPO = Path(__file__).resolve().parent.parent
 # The ONE allowlisted synthetic VIN used by tests/docs. Everything else VIN-shaped is blocked.
 PLACEHOLDER_VIN = "WVWTELEMETRY00TES"
 VIN_RE = re.compile(r"\b[A-HJ-NPR-Z0-9]{17}\b")  # 17-char VIN charset (no I/O/Q)
-CRED_RE = re.compile(r"(VWID_PASSWORD|INFLUX_TOKEN)\s*=\s*\S+")
+CRED_RE = re.compile(r"(VWID_PASSWORD|INFLUX_TOKEN)[ \t]*=[ \t]*\S+")
 
 
 def _tracked_files() -> list[Path]:
@@ -57,3 +57,13 @@ def test_no_credentials_committed():
         for m in CRED_RE.findall(f.read_text(errors="ignore")):
             offenders.append(f"{f.relative_to(REPO)}: {m}")
     assert not offenders, "credential assignments committed:\n" + "\n".join(offenders)
+
+
+def test_cred_regex_does_not_span_newlines():
+    # a bare KEY= on its own line (empty value) must NOT match a token on a later line
+    password_key = "VWID_PASSWORD"  # noqa: S105
+    token_key = "INFLUX_TOKEN"  # noqa: S105
+    assert not CRED_RE.search(password_key + "=\n\nsome prose later\n")
+    # an inline populated credential MUST still be caught
+    assert CRED_RE.search(password_key + "=hunter2")
+    assert CRED_RE.search(token_key + " = abc123")
