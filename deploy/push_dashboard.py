@@ -12,9 +12,9 @@ from pathlib import Path
 def push(url: str, token: str, dashboard_path: str) -> int:
     dash = json.loads(Path(dashboard_path).read_text())
     body = json.dumps({"dashboard": dash, "overwrite": True}).encode()
-    req = urllib.request.Request(
+    req = urllib.request.Request(  # noqa: S310
         url.rstrip("/") + "/api/dashboards/db",
-        data=body,  # noqa: S310
+        data=body,
         headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
     )
     with urllib.request.urlopen(req, timeout=15) as r:  # noqa: S310
