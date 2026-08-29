@@ -32,7 +32,9 @@ def _text_files() -> list[Path]:
         # SDD plan/spec docs quote future files' exact contents (incl. placeholder
         # KEY= / VIN-shaped samples for later tasks) verbatim; they are design
         # material, not committed secrets - excluded the same way tooling excludes them.
-        and "docs/superpowers" not in p.relative_to(REPO).as_posix()
+        # (path-prefix check, not substring, so docs/superpowers-old/... etc. isn't
+        # wrongly swept in too)
+        and p.relative_to(REPO).parts[:2] != ("docs", "superpowers")
     ]
 
 

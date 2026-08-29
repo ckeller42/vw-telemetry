@@ -15,7 +15,7 @@ dev = ["pytest>=8", "mypy>=1.11", "ruff>=0.6", "pre-commit>=3.8",
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-extend-exclude = ["docs", ".superpowers"]
+extend-exclude = ["docs/superpowers", ".superpowers"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "S"]   # incl. S = bandit security rules
 [tool.ruff.lint.per-file-ignores]
