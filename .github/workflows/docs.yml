@@ -12,12 +12,12 @@ jobs:
     permissions: { contents: read, pages: write, id-token: write }
     environment: { name: github-pages }
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v3
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
       - run: uv sync --all-extras
       - run: uv run mkdocs build --strict -d site
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         if: github.ref == 'refs/heads/main'
         with: { path: site }
-      - uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v5
         if: github.ref == 'refs/heads/main'
