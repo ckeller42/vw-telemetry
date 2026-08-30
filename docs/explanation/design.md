@@ -6,15 +6,12 @@ implementation plan follows (writing-plans). Author: brainstormed with Claude.
 ## 1. Purpose & scope
 
 A **standalone** service that pulls Volkswagen-Group vehicle telemetry from the **EU Data Act
-portal** and writes it to **InfluxDB** for visualisation in **Grafana**. It is deliberately
-independent of the `open-california` camper (BLE) project — it shares the same buspi host and the
-same Grafana/InfluxDB *engines*, but no code, no bucket, and no dashboard.
+portal** and writes it to **InfluxDB** for visualisation in **Grafana**. It runs independently as its
+own service (own bucket, own dashboard), reusing an existing InfluxDB/Grafana host.
 
-**Why the EU Data Act portal:** VW locked the app/WeConnect API behind Google Play Integrity
-**attestation** (a Google-signed, device-bound token a server can't forge). The EU Data Act portal
-(`eu-data-act.drivesomethinggreater.com`) is the sanctioned, attestation-free path — VW-ID login
-only. It is **read-only** and delivers a dataset roughly every **15 minutes** (batch, not live). See
-§9 and the `explanation/attestation.md` note.
+**Why the EU Data Act portal:** `eu-data-act.drivesomethinggreater.com` is the official channel for
+accessing your own VW-Group vehicle data — VW-ID login only. It is **read-only** and delivers a
+dataset roughly every **15 minutes** (batch, not live). See §9.
 
 **Generic by design:** no personal data, VIN, brand, or host is baked in. Any user, with any
 VW-Group car (VW / Audi / Škoda / SEAT / Cupra / Bentley), on any InfluxDB+Grafana host, configures
@@ -24,7 +21,7 @@ it entirely via environment.
 
 - No control/commands (the feed is read-only; there is no actuation path).
 - No live/CAN data, no GPS parking position (the EU Data Act feed omits location — see §9).
-- No coupling to `open-california` or the `volkswagen_decompile` analysis repo.
+- No coupling to any other project; it stands alone.
 
 ## 3. Architecture
 
@@ -164,7 +161,7 @@ quadrants (as Django/NumPy do):
 - **How-to:** deploy to buspi · add a new field · rotate creds · create the bucket · add a brand.
 - **Reference:** the InfluxDB schema, the **field catalog** (every metric + unit + source), the
   config/env table, the systemd units, the CLI.
-- **Explanation:** the attestation story (why EU Data Act), the architecture, the real-timestamp
+- **Explanation:** why the EU Data Act portal, the architecture, the real-timestamp
   decision, why standalone.
 
 Public functions carry docstrings (Google style, mkdocstrings-rendered). CI runs
@@ -176,7 +173,7 @@ MkDocs is stable now; its successor *Zensical* reads the same config, so no lock
 
 - **Batch, not live:** ~15-min cadence; VW may delay the *first* delivery by hours after a data
   request is enabled; parked/idle vehicles emit empty datasets until driven.
-- **No GPS parking position** in the EU Data Act feed (attestation-gated app API only).
+- **No GPS parking position** — the EU Data Act feed does not include location.
 - **Tyre pressures are status codes** (OK/warn), not bar values.
 - **No driving score** (harsh-braking/acceleration events); "driving style" is derived from
   consumption + speed.

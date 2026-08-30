@@ -9,16 +9,13 @@ Pull **Volkswagen-Group** vehicle telemetry from the **EU Data Act** portal into
 visualise it in **Grafana**. Standalone, read-only, and generic — any user, any VW-Group car
 (VW / Audi / Škoda / SEAT / Cupra / Bentley), any InfluxDB+Grafana host.
 
-> **Status: design phase.** The committed design is in
-> [`docs/explanation/design.md`](docs/explanation/design.md); implementation follows.
-
 ## Why
 
-VW locked the app/WeConnect API behind Google Play Integrity **attestation** (an unforgeable,
-device-bound token). The **EU Data Act portal** is the sanctioned, attestation-free path — VW-ID
-login only, read-only, ~15-minute batch datasets. This service polls it on a schedule and stores the
-decoded telemetry (odometer, fuel, AdBlue, range, doors/windows/locks, tyres, service intervals,
-warnings, trip computers) for dashboards.
+The **EU Data Act portal** (`eu-data-act.drivesomethinggreater.com`) is the official channel for
+accessing your own VW-Group vehicle data — VW-ID login only, read-only, delivered as ~15-minute
+batch datasets. This service polls it on a schedule and stores the decoded telemetry (odometer,
+fuel, AdBlue, range, doors/windows/locks, tyres, service intervals, warnings, trip computers) in
+InfluxDB for dashboards.
 
 ## Privacy & configuration
 

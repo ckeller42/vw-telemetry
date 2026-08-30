@@ -35,7 +35,7 @@ Conventions to follow:
   doesn't write a spurious `0` or `null`.
 - **Booleans from enum codes** — VW's field enums aren't `0`/`1`; e.g. locked state is `2 = locked`
   / `3 = unlocked`, open state is `2 = open` / `3 = closed`. Check the real code values (the
-  module docstring at the top of `decode.py` lists the ones already reverse-engineered) rather
+  module docstring at the top of `decode.py` lists the known code values) rather
   than assuming a truthy/falsy mapping — an inverted boolean is a classic silent bug here.
 
 ## 2. Add a test in `tests/test_decode.py`
