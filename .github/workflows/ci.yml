@@ -1,22 +1,43 @@
-name: ci
-on: [push, pull_request]
+# Staged CI, house style: least-privilege permissions; secret-scan; a python matrix (floor + deploy
+# target) for tests; version-independent guards (lint/types/docs/privacy) run ONCE on the deploy
+# target (3.13). Local mirror: scripts/ci.sh.
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+permissions: { contents: read }
 jobs:
   secret-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: {fetch-depth: 0}
+        with: { fetch-depth: 0 }
       - uses: gitleaks/gitleaks-action@v2
-  quality:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]   # floor (requires-python >=3.11) + deploy target
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
-      - run: uv python install 3.11
-      - run: uv sync --all-extras
-      - run: uv run pytest tests/test_no_private_data.py -v   # guard runs first
-      - run: uv run ruff check .
-      - run: uv run ruff format --check .
-      - run: uv run mypy vwtelemetry
-      - run: uv run pytest -v
-      - run: uv run mkdocs build --strict
+      - run: uv python install ${{ matrix.python }}
+      - run: uv sync --all-extras --python ${{ matrix.python }}
+      # privacy guard first, on the deploy target — fail fast if a VIN/credential slipped in
+      - name: Privacy guard
+        if: matrix.python == '3.13'
+        run: uv run pytest tests/test_no_private_data.py -v
+      - name: Tests
+        run: uv run pytest -q
+      # version-independent guards: ONCE, on the deploy-target python
+      - name: Lint, types & docs
+        if: matrix.python == '3.13'
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+          uv run mypy vwtelemetry
+          uv run mkdocs build --strict

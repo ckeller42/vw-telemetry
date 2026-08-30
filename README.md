@@ -1,5 +1,10 @@
 # vw-telemetry
 
+[![CI](https://github.com/ckeller42/vw-telemetry/actions/workflows/ci.yml/badge.svg)](https://github.com/ckeller42/vw-telemetry/actions/workflows/ci.yml)
+[![docs](https://img.shields.io/badge/docs-github%20pages-blue)](https://ckeller42.github.io/vw-telemetry/)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 Pull **Volkswagen-Group** vehicle telemetry from the **EU Data Act** portal into **InfluxDB**, and
 visualise it in **Grafana**. Standalone, read-only, and generic — any user, any VW-Group car
 (VW / Audi / Škoda / SEAT / Cupra / Bentley), any InfluxDB+Grafana host.

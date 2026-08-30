@@ -2,6 +2,7 @@
 name = "vw-telemetry"
 version = "0.1.0"
 description = "VW-Group EU Data Act telemetry -> InfluxDB -> Grafana"
+license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
     "influxdb-client>=1.40",

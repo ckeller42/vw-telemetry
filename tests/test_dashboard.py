@@ -94,6 +94,5 @@ def test_dashboard_only_queries_fields_the_decoder_emits():
     assert referenced, 'no `_field=="..."` references found in the dashboard (regex/format drift?)'
     missing = referenced - _emitted_fields()
     assert not missing, (
-        "dashboard queries field(s) decode.py never emits (would render empty): %s"
-        % sorted(missing)
+        f"dashboard queries field(s) decode.py never emits (would render empty): {sorted(missing)}"
     )
