@@ -140,7 +140,7 @@ def test_no_credentials_committed():
     offenders = []
     for f in _text_files():
         if f.name.endswith(".env.example"):
-            continue                      # placeholders like VWID_PASSWORD= (empty) are fine here
+            continue                      # placeholders like VWID_PASSWORD (empty) are fine here
         for m in CRED_RE.findall(f.read_text(errors="ignore")):
             offenders.append(f"{f.relative_to(REPO)}: {m}")
     assert not offenders, "credential assignments committed:\n" + "\n".join(offenders)

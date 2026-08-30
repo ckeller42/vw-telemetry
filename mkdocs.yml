@@ -1,0 +1,13 @@
+site_name: vw-telemetry
+theme:
+  name: material
+plugins:
+  - search
+  - mkdocstrings:
+      handlers: {python: {paths: [.]}}
+nav:
+  - Home: index.md
+  - Tutorials: [tutorials/first-vehicle.md]
+  - How-to: [how-to/deploy-buspi.md, how-to/add-a-field.md]
+  - Reference: [reference/influx-schema.md, reference/config.md, reference/api.md]
+  - Explanation: [explanation/design.md]

@@ -1,0 +1,12 @@
+[Unit]
+Description=vw-telemetry — EU Data Act -> InfluxDB (oneshot)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/vw-telemetry
+EnvironmentFile=/etc/buspi/vw-telemetry.env
+Environment=VW_STATE_DIR=/home/pi/vw-telemetry/state
+ExecStart=/home/pi/vw-telemetry/.venv/bin/python -m vwtelemetry.poll

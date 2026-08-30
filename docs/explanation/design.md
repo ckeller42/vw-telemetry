@@ -139,7 +139,7 @@ Defense in depth so a secret or a real VIN cannot be committed even if one layer
 2. **pre-commit** (local, fast, auto-fix): `gitleaks`, `detect-private-key`,
    `check-added-large-files`, end-of-file/trailing-whitespace; **Ruff** lint+format; and a custom
    **`no-private-data`** hook — fails if a staged file matches a real VW-Group VIN pattern
-   (`W` + valid WMI, 17 chars) or a populated `VWID_PASSWORD=`/token.
+   (`W` + valid WMI, 17 chars) or a populated `VWID_PASSWORD` / token value.
 3. **GitHub Actions CI** (authoritative; can't be locally skipped):
    | Stage | Tool |
    |---|---|

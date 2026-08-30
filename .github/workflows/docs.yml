@@ -1,0 +1,23 @@
+# Strict MkDocs docs -> GitHub Pages. Deploy is main-gated even with a main-only trigger.
+name: docs
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**', 'vwtelemetry/**', 'mkdocs.yml', 'README.md']
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, pages: write, id-token: write }
+    environment: { name: github-pages }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.0.1
+      - run: uv sync --all-extras
+      - run: uv run mkdocs build --strict -d site
+      - uses: actions/upload-pages-artifact@v5
+        if: github.ref == 'refs/heads/main'
+        with: { path: site }
+      - uses: actions/deploy-pages@v5
+        if: github.ref == 'refs/heads/main'
