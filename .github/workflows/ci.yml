@@ -26,7 +26,7 @@ jobs:
         python: ["3.11", "3.13"]   # floor (requires-python >=3.11) + deploy target
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.0.1
       - run: uv python install ${{ matrix.python }}
       - run: uv sync --all-extras --python ${{ matrix.python }}
       # privacy guard first, on the deploy target — fail fast if a VIN/credential slipped in
