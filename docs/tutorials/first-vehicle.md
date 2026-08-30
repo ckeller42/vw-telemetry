@@ -6,9 +6,9 @@ with at least one VW-Group vehicle on it.
 
 ## 1. Enable the 15-minute data feed in the EU Data Act portal
 
-VW's app API is locked behind Google Play Integrity attestation, so vw-telemetry instead reads
-the **EU Data Act portal** (`eu-data-act.drivesomethinggreater.com`), which VW must provide under
-the EU Data Act. It is read-only and delivers a new dataset roughly every 15 minutes.
+vw-telemetry reads the **EU Data Act portal** (`eu-data-act.drivesomethinggreater.com`), the
+official channel VW provides for accessing your own vehicle data under the EU Data Act. It is
+read-only and delivers a new dataset roughly every 15 minutes.
 
 1. Sign in to the portal with your VW-ID.
 2. Find your vehicle and enable the **"All data"** data request.
