@@ -8,6 +8,6 @@ plugins:
 nav:
   - Home: index.md
   - Tutorials: [tutorials/first-vehicle.md]
-  - How-to: [how-to/deploy-buspi.md, how-to/add-a-field.md]
+  - How-to: [how-to/deploy-buspi.md, how-to/add-a-field.md, how-to/backfill-from-archive.md]
   - Reference: [reference/influx-schema.md, reference/config.md, reference/api.md]
   - Explanation: [explanation/design.md]
