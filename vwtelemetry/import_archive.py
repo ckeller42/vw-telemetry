@@ -62,12 +62,28 @@ def normalize(record: dict[str, Any], default_brand: str = "volkswagen") -> dict
 
 
 def iter_records(path: str) -> Iterator[dict[str, Any]]:
-    """Yield one dict per non-blank JSONL line in ``path``."""
+    """Yield one dict per non-blank JSONL line in ``path``.
+
+    A malformed JSON line raises ``ValueError`` naming ``path`` and the 1-based source line, so a
+    bad line in a large archive is pinpointed rather than reported as the parser's local "line 1".
+    """
     with open(path) as f:
-        for line in f:
-            line = line.strip()
-            if line:
+        for lineno, raw in enumerate(f, start=1):
+            line = raw.strip()
+            if not line:
+                continue
+            try:
                 yield json.loads(line)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"{path}:{lineno}: malformed JSON ({e})") from e
+
+
+def _to_point(rec: dict[str, Any], default_brand: str) -> Any:
+    """Normalize + decode one record into a point, tagging failures with the dataset name."""
+    try:
+        return to_point(decode(normalize(rec, default_brand)))
+    except Exception as e:
+        raise ValueError(f"cannot decode dataset {rec.get('dataset', '?')!r}: {e}") from e
 
 
 def import_records(
@@ -83,9 +99,7 @@ def import_records(
     do_write = write or write_points
     allow = set(config.vin_allowlist)
     points = [
-        to_point(decode(normalize(rec, config.brand)))
-        for rec in records
-        if not allow or rec.get("vin") in allow
+        _to_point(rec, config.brand) for rec in records if not allow or rec.get("vin") in allow
     ]
     return do_write(config, points) if points else 0
 
@@ -99,7 +113,7 @@ def main() -> None:
     if a.dry_run:
         n = 0
         for rec in iter_records(a.path):
-            decode(normalize(rec))  # raises on a malformed record, pointing at the bad line
+            _to_point(rec, "volkswagen")  # raises naming the offending dataset on any bad record
             n += 1
         print(f"vw-telemetry import (dry-run): {n} record(s) decoded OK, 0 written", flush=True)
         return

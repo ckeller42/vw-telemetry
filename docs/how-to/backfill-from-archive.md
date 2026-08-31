@@ -34,8 +34,8 @@ It prints how many records decoded cleanly:
 vw-telemetry import (dry-run): 219 record(s) decoded OK, 0 written
 ```
 
-A record that fails to decode raises immediately, pointing at the offending line — fix or drop it
-before the real run.
+A record that fails to decode raises immediately, naming the offending **dataset** (and, for a
+malformed JSON line, the file and line number) — fix or drop it before the real run.
 
 ## Import
 
@@ -57,8 +57,13 @@ the timer carry history forward.
 ## Verify
 
 ```bash
-influx query 'from(bucket:"vehicle") |> range(start:-30d) |> count()' --org home
+influx query 'from(bucket:"vehicle")
+  |> range(start:-30d)
+  |> filter(fn:(r) => r._field == "mileage_km")
+  |> count()' --org home
 ```
 
-The count should jump by roughly the number of records in your archive, and the Grafana timeline
-should now extend back to the archive's earliest dataset.
+Filtering to a single field that every point carries (`mileage_km`) makes the count one row **per
+record**, not one per decoded field — `count()` operates per Flux table, so an unfiltered query
+returns a separate count for every field. The count should jump by roughly the number of records in
+your archive, and the Grafana timeline should now extend back to the archive's earliest dataset.

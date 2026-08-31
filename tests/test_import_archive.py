@@ -66,7 +66,7 @@ def test_normalize_preserves_existing_captured_at():
     rec = normalize(
         {
             "ts": "20260830164321",
-            "vin": "V",
+            "vin": "WVWTELEMETRY00TES",
             "captured_at": "2026-01-01T00:00:00+00:00",
             "brand": "audi",
             "fields": {},
@@ -118,3 +118,23 @@ def test_iter_records_reads_jsonl_skipping_blanks(tmp_path):
     p.write_text(f"{a}\n\n{b}\n")  # blank line in the middle must be skipped
     recs = list(iter_records(str(p)))
     assert len(recs) == 2 and recs[0]["ts"] == "20260830164321"
+
+
+def test_iter_records_reports_source_line_on_bad_json(tmp_path):
+    """A malformed line raises naming the file and the real 1-based line number, not 'line 1'."""
+    p = tmp_path / "arc.jsonl"
+    p.write_text(f"{json.dumps(_archive_rec())}\n{{not json\n")
+    with pytest.raises(ValueError, match=r":2: malformed JSON"):
+        list(iter_records(str(p)))
+
+
+def test_import_records_names_dataset_on_decode_failure():
+    """A record that can't decode raises naming its dataset, so the bad one is identifiable."""
+    bad = {
+        "dataset": "20260830164321_BADSTAMP.zip",
+        "ts": "99999999999999",  # 14 digits but not a real timestamp
+        "vin": "WVWTELEMETRY00TES",
+        "fields": {},
+    }
+    with pytest.raises(ValueError, match=r"20260830164321_BADSTAMP\.zip"):
+        import_records(_cfg(), [bad], write=lambda cfg, pts: len(pts))
