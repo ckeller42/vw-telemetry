@@ -32,11 +32,18 @@ class Config:
     influx_token: str
 
     @classmethod
-    def from_env(cls) -> Config:
+    def from_env(cls, require_portal: bool = True) -> Config:
+        """Build config from the environment.
+
+        ``require_portal`` (default True) demands the VW-ID login vars. Set it False for
+        InfluxDB-only entrypoints such as the archive backfill, which never contact the portal
+        and so need only ``INFLUX_TOKEN``.
+        """
         _load_dotenv()
-        missing = [
-            k for k in ("VWID_USER", "VWID_PASSWORD", "INFLUX_TOKEN") if not os.environ.get(k)
-        ]
+        required = (
+            ("VWID_USER", "VWID_PASSWORD", "INFLUX_TOKEN") if require_portal else ("INFLUX_TOKEN",)
+        )
+        missing = [k for k in required if not os.environ.get(k)]
         if missing:
             sys.exit(
                 f"Missing required env: {', '.join(missing)} (see deploy/vw-telemetry.env.example)"
@@ -44,8 +51,8 @@ class Config:
         raw = os.environ.get("VW_VIN_ALLOWLIST", "")
         allow = [v.strip() for v in raw.split(",") if v.strip()]
         return cls(
-            vwid_user=os.environ["VWID_USER"],
-            vwid_password=os.environ["VWID_PASSWORD"],
+            vwid_user=os.environ.get("VWID_USER", ""),
+            vwid_password=os.environ.get("VWID_PASSWORD", ""),
             brand=os.environ.get("VW_BRAND", "volkswagen"),
             country=os.environ.get("VW_COUNTRY", "DE"),
             vin_allowlist=allow,

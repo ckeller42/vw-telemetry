@@ -46,3 +46,20 @@ def test_missing_required_exits(monkeypatch):
     monkeypatch.setenv("INFLUX_TOKEN", "t")
     with pytest.raises(SystemExit):
         Config.from_env()
+
+
+def test_influx_only_needs_no_portal_creds(monkeypatch):
+    """require_portal=False (the archive backfill) loads with only INFLUX_TOKEN, no VW-ID creds."""
+    for k in ("VWID_USER", "VWID_PASSWORD"):
+        monkeypatch.delenv(k, raising=False)
+    monkeypatch.setenv("INFLUX_TOKEN", "t")
+    c = Config.from_env(require_portal=False)
+    assert c.influx_token == "t" and c.vwid_user == "" and c.vwid_password == ""  # noqa: S105
+
+
+def test_influx_only_still_requires_token(monkeypatch):
+    """Even without portal creds, INFLUX_TOKEN is mandatory — the backfill must write somewhere."""
+    for k in ("VWID_USER", "VWID_PASSWORD", "INFLUX_TOKEN"):
+        monkeypatch.delenv(k, raising=False)
+    with pytest.raises(SystemExit):
+        Config.from_env(require_portal=False)

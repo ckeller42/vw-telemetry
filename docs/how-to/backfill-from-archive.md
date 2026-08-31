@@ -44,9 +44,10 @@ uv run python -m vwtelemetry.import_archive path/to/telemetry.jsonl
 ```
 
 This decodes each record and writes it to the `vehicle` bucket, honouring `VW_VIN_ALLOWLIST` (blank
-= all vehicles), the same as the live poller. It reads the same environment as
-[`poll`](deploy-buspi.md#2-write-the-credentials-file) — `INFLUX_URL`, `INFLUX_ORG`,
-`INFLUX_BUCKET`, `INFLUX_TOKEN` — so run it wherever those are configured.
+= all vehicles) and defaulting each record's `brand` to `VW_BRAND`, the same as the live poller.
+Backfill writes to InfluxDB only and never contacts the portal, so it needs the **InfluxDB settings
+only** — `INFLUX_URL`, `INFLUX_ORG`, `INFLUX_BUCKET`, `INFLUX_TOKEN` (plus `VW_BRAND` if your feed
+isn't the `volkswagen` default) — and **no VW-ID credentials**. Run it wherever those are set.
 
 **Idempotent:** points are timestamped at the vehicle's own clock, so re-importing the same archive
 overwrites each point in place rather than duplicating it. The live 15-minute timer and a one-time
