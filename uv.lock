@@ -121,15 +121,15 @@ wheels = [
 
 [[package]]
 name = "carconnectivity-connector-vw-eu-data-act"
-version = "0.3.1"
+version = "0.3.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "carconnectivity" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/af/79/5236c1e26921e3c0e25d3dcbb9c5fad8793a836f6a36fe84260c977f14bc/carconnectivity_connector_vw_eu_data_act-0.3.1.tar.gz", hash = "sha256:9c5081dc413d8692229899b4adec39f0cc67734f2b502448183e73134d4f05da", size = 84396, upload-time = "2026-09-16T22:15:58.209Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/ca/becd202c42ed68a2a84d22e80361c6e8246aae09266b3ec7a18f8a09a054/carconnectivity_connector_vw_eu_data_act-0.3.2.tar.gz", hash = "sha256:80493d86266298e3043579fe6800d4816b8c61e3fdfcab619471f22c947b2a87", size = 93002, upload-time = "2026-10-07T10:53:32.551Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4d/01/7f9a3c629f8828b6da4b6d727b33e2f2d26fddf82ffae949e941e1ac6f50/carconnectivity_connector_vw_eu_data_act-0.3.1-py3-none-any.whl", hash = "sha256:01c0083acda33fb96c8583a8c752ce2e961d64f4143c502dd978add1fd03510d", size = 47396, upload-time = "2026-09-16T22:15:56.76Z" },
+    { url = "https://files.pythonhosted.org/packages/8d/b0/da6f9b758b386338c896801776ff18ebc0f17b11cfcf06a96977a7bdadb0/carconnectivity_connector_vw_eu_data_act-0.3.2-py3-none-any.whl", hash = "sha256:cf2821cf488a237b66160526bfaf3e7fd464b769ec6869c2e53ca9fac868a222", size = 51033, upload-time = "2026-10-07T10:53:31.317Z" },
 ]
 
 [[package]]
